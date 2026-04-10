@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from typing import Annotated
 import os
@@ -10,6 +12,7 @@ import numpy as np
 # Setup directory paths
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 model_path = os.path.join(BASE_DIR, "model.pkl")
+frontend_path = os.path.join(BASE_DIR, "Frontend")
 
 # Load model
 try:
@@ -21,10 +24,10 @@ except FileNotFoundError:
 
 app = FastAPI(title="Customer Churn Prediction API")
 
-# Add CORS Middleware to allow frontend requests
+# Add CORS Middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for development
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,23 +39,21 @@ class customer_data(BaseModel):
     Contract_Length_encoded: Annotated[int, Field(ge=0, le=2)]
     Payment_Delay: Annotated[int, Field(ge=0)]
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the Customer Churn Prediction API!"}
-
 @app.post("/predict")
 def predict_churn(data: customer_data):
     if model is None:
         return {"error": "Model not loaded"}
 
-    # Convert input to numpy array matching training features
     features = np.array([[data.Gender_encoded,
                           data.Subscription_Type_encoded,
                           data.Contract_Length_encoded,
                           data.Payment_Delay]])
 
-    # Make prediction
     prediction = int(model.predict(features)[0])
-    
-    # Return result
-    return {"churn_prediction": prediction}
+    return {"churn_prediction": prediction}
+
+# Serve static files from Frontend directory at the root
+# MUST be added after all other routes
+app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
+
+
