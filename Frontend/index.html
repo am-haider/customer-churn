@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Churn Prediction</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Customer Churn Predictor</h1>
+      <p class="subtitle">Enter customer details to predict churn probability.</p>
+
+      <form id="churnForm">
+        <div class="input-group">
+          <label for="gender">Gender</label>
+          <select id="gender" required>
+            <option value="0">Female</option>
+            <option value="1">Male</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="subscription">Subscription Type</label>
+          <select id="subscription" required>
+            <option value="0">Basic</option>
+            <option value="1">Premium</option>
+            <option value="2">Standard</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="contract">Contract Length</label>
+          <select id="contract" required>
+            <option value="0">Annual</option>
+            <option value="1">Monthly</option>
+            <option value="2">Quarterly</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label for="delay">Payment Delay (days)</label>
+          <input type="number" id="delay" min="0" placeholder="0" required>
+        </div>
+
+        <button type="submit">Predict Churn</button>
+      </form>
+
+      <div id="result" class="result"></div>
+    </div>
+  </div>
+
+  <script src="function.js"></script>
+</body>
+</html>
